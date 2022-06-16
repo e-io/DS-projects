@@ -18,7 +18,7 @@
 
 Следующая группа данных - данные локации. На основе локации, указанных пользователем, автоматически генерируются следующие полезные данные.
 - `locality_name`. Какой город. Основной вариант - "Санкт-Петербург". Кроме него - города и поселки Ленобласти.
-- `cityCenters_nearest`. Расстояние до центра. Предположительно, до центра области - до центра Санкт-Петербурга, а не центров любых городков.
+- `cityCenters_nearest`. Расстояние до центра Санкт-Петербурга.
 - `parks_around3000`. Число парков в радиусе 3км. Конечно, это неточное понятие, так как парки бывают огромные как Сосновка и махонькие скверы. Было бы лучше иметь суммарную площадь парковой зоны в круге 3-км радиуса.
 - `parks_nearest`. Расстояние до ближайшего парка в метрах.
 - `ponds_around3000` и `ponds_nearest`. Аналогичные данные про водоемы. 
@@ -49,14 +49,67 @@
 - describe() – вывод основных структурных (квартили, медиана) и алгебраических (сред.ариф.) характеристик столбца
 - pivot_table() – создание сводных таблиц
 - query() – фильтрация строк по условию
+- where(условие, значение) - замена всех данных в столбце, не подпадающих под какое-то условие, на одинаковое значение (например, "Другие") 
 - transform()
+- to_datetime() - для приведения времени из строкового формата в специальный формат времени, заложенный в pandas и python
+– pandas.DatetimeIndex.weekday, .month, .year – вырывающие день недели, месяц, год функции. Они помогают категоризовать временные данные.
+- corr() – построение матрицы корреляции. Всем столбцам попарно вычисляется коэффициент корреляции Пирсона и выводится в матрицу
+- groupby() – группировка, эдакое разделение таблицы на множество таблиц по признаку одинакового значения в каком-то из столбцов. Используя groupby можно легко писать такую аналитическую функцию, вычисляющую что-либо для этих подтаблиц
+`for type, slice in df.groupby('floor_type'):
+    print(type, slice['m2_price'].median())`
+- isin() – есть ли значение в серии
+
+Функции для построения графической аналитики
+- hist(bins=..) - построение гистограммы. По горизонтали - шкала значений. По вертикали - частота их встречаемости.
+- .plot(kind='scatter') - построение матрицы рассеяния. По горизонтали и вертикали любая пара столбцов таблицы, и на поле - точки, соответствующие каждому данному.
+- .plot(kind='bar') - построение столбчатой диаграммы. По горизонтали значения индекса, а по вертикали - значения в серии.
+- pyplot.hist(..), .hist(..), .show() – с помощью данного набора команд можно отобразить два графика на одном. Удобно для сравнения. Важно чтобы оси были в тех же единицах измерения (условно говоря, по горизонтали - возраст коров, по вертикали - литры молока)
+- for rooms, slice in ...groupby('rooms') print (rooms, slice['m2_price'].median()) – самописная функция для группировки по значению и выводу этого значения с каким-то аггрегированным показателем для каждого значения
+- 
 
 
 ## Используемые навыки
-
+- читать значение функции describe(), понимать с ее помощью характеристики распределения - квартили, среднее, стандартное отклонение
+- умение строить разные виды диаграмм: столбчатые, гистограммы, рассеяния и пр.
+- умение строить две гистограммы на одной
+- умение читать и анализировать диаграмму
+- понимать значение индекса корреляции Пирсона и правильно словесно интерпретировать численные показатели
+- умение читать и анализировать матрицу корреляции
+- умение работать над большим проектом, не дублироваться, помнить уже пройденные шаги
+- кропотливость, усидчивость
+- умение вживаться в предметную область (в данном случае - рынок недвижимости)
 
 # Borrower reliability study
 
 ## Data
+Data might be logically divided into several groups. 
+
+First group - data about flat as it is. This data is provided (or skipped) by user. 
+- `total_area`. (m^2)
+- `living_area`. (m^2)
+- `kitchen_area`. (m^2)
+- `ceiling_height`. (cm)
+- `rooms`. Number of rooms.
+- `studio`. Is it studio apartment or not.
+- `balcony`. Number of balconies.
+- `open_plan`. Is it open plan of flat or not.
+- `is_apartment`. Is this specific short–living purpose apartments (value True) or standard long–living purpose apartments (value False)
+- `floor`. Number of floor.
+- `floors_total`. Total number of floors in building.
+
+Next group of data is automatically generated data based on location of flat.
+- `locality_name`. City/town where flat is located. Saint-Petersburg and towns of Leningrad region (Lenoblast)
+- `cityCenters_nearest`. Distance from flat to the center of Saint-Petersburg.
+- `parks_around3000`. Number of parks in a 3000 meters radius.
+- `parks_nearest`. Distance to the nearest park in meters.
+- `ponds_around3000` и `ponds_nearest`. Similar data about ponds.
+- `airports_nearest`. Distance to the nearest airport (Pulkovo).
+
+And the last group of data is characteristics of an ad.
+- `first_day_exposition`. When this ad was published.
+- `days_exposition`. How many days this ad was open.
+- `total_images`. Number of photos (images) in this ad.
+- `last_price`. Last price of flat in ad. Usually, this is a price of sale or the most similar to it.
 
 ## Goal
+To understand, how price of flat depends on different factors using data descriptions, Pearson correlation coefficient, histograms, diagrams, scatter matrices etc.

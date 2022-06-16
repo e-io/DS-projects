@@ -82,4 +82,4 @@ We have data with information about bank borrowers with next columns:
   - `debt` (0 if there was no loan payment delay and 1 if there was a delay of payment in time)
 
 ## Goal
-- To understand which factors above all affect payment of loan in time (without delays)
+To understand which factors above all affect payment of loan in time (without delays)
